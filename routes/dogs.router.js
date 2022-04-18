@@ -1,5 +1,7 @@
 const express = require("express");
-const { process_params } = require("express/lib/router");
+
+// models
+const Dogs = require("../models/dogs");
 
 const dogsRouter = express.Router();
 
