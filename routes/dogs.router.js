@@ -17,8 +17,7 @@ dogsRouter.get("/", (req, res)=>{
 
 dogsRouter.post("/", (req, res)=>{
     Dogs.create(req.body).then((resp)=>{
-        //res.send("New dog added.");
-        res.json(req.body);
+        res.send("New dog added.");
     });
 });
 
@@ -38,8 +37,11 @@ dogsRouter.get("/:id", (req, res)=>{
     Dogs.findById(req.params.id).then((dog)=>{
             res.json(dog);
     }).catch((err)=>{
-        res.send("No data found");
-    })
+        //res.send("No data found");
+        Dogs.find({name : req.params.id}).then((dog)=>{
+            res.json(dog);
+        });
+    });
     //res.send("Showing dog id/name : "+req.params.id);
 });
 
@@ -48,8 +50,13 @@ dogsRouter.put("/:id", (req, res)=>{
     Dogs.updateOne({_id: req.params.id}, req.body).then((resp)=>{
         res.send("Id : "+req.params.id+" is updated");
     }).catch((err)=>{
-        res.send("No existing data found");
-    })
+        //res.send("No existing data found");
+        Dogs.find({name : req.params.id}).then((resp)=>{
+            res.send(req.params.id+" is updated");
+        }).catch((err)=>{
+            res.send("No existing data found to update.");
+        });
+    });
     //res.send("Updating dog id/name : "+req.params.id);
 });
 
@@ -63,7 +70,12 @@ dogsRouter.delete("/:id", (req, res)=>{
     Dogs.findByIdAndRemove(req.params.id).then((resp)=>{
         res.send("Id : "+req.params.id+" is deleted.");
     }).catch((err)=>{
-        res.send("No existing data found");
+        //res.send("No existing data found");
+        Dogs.findOneAndRemove({name : req.params.id}).then((resp)=>{
+            res.send(req.params.id+" is deleted");
+        }).catch((err)=>{
+            res.send("No existing data found to delete.");
+        });
     });
 });
 
